@@ -9,20 +9,56 @@ import RadioButtons from "./Components/RadioButton";
 import api from './Service/api';
 
 function App() {
-
+  const [selectValue, setSelectValue] = useState('all');
   const [title, setTitle] = useState('');
   const [note, setNotes] = useState('');
   const [allNotes, setAllNotes] = useState([]);
 
   useEffect(() => {
-    async function getAllNotes() {
-      const response = await api.get('/annotations',)
-      setAllNotes(response.data);
-
-
-    }
     getAllNotes();
   }, [])
+
+  async function getAllNotes() {
+    const response = await api.get('/annotations',)
+    setAllNotes(response.data);
+  }
+
+  async function loadNotes(option) {
+    const params = { priority: option };
+    const response = await api.get('/priorities', { params })
+
+    if (response) {
+      setAllNotes(response.data)
+    }
+  }
+
+  function handleChange(e) {
+    setSelectValue(e.value);
+
+    if (e.checked && e.value !== 'all') {
+      loadNotes(e.value);
+    } else {
+      getAllNotes();
+    }
+  }
+
+  async function handleDelete(id) {
+    const deleteNote = await api.delete(`/annotations/${id}`);
+    if (deleteNote) {
+      // window.location.reload();
+      setAllNotes(allNotes.filter(e => e._id !== id));
+    }
+  }
+
+  async function handleChangePriority(id) {
+    const changePriority = await api.post(`/priorities/${id}`);
+    if (changePriority && selectValue !== 'all') {
+      loadNotes(selectValue);
+    } else if (changePriority) {
+      getAllNotes();
+    }
+  }
+
 
   useEffect(() => {
     function enableSubmitButton() {
@@ -48,7 +84,12 @@ function App() {
     setTitle('');
     setNotes('');
 
-    setAllNotes([...allNotes, response.data]);
+    if (selectValue !== 'all') {
+      getAllNotes();
+    } else {
+      setAllNotes([...allNotes, response.data]);
+    }
+    setSelectValue('all');
   }
 
   return (
@@ -80,7 +121,10 @@ function App() {
 
         </form>
 
-        <RadioButtons />
+        <RadioButtons
+          selectValue={selectValue}
+          handleChange={handleChange}
+        />
       </aside>
 
 
@@ -88,7 +132,12 @@ function App() {
         <ul>
           {
             allNotes.map(data => (
-              <Notes data={data} />
+              <Notes
+                key={data._id}
+                data={data}
+                handleDelete={handleDelete}
+                handleChangePriority={handleChangePriority}
+              />
             ))
           }
         </ul>
