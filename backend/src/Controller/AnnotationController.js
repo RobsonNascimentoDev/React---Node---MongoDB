@@ -12,16 +12,26 @@ module.exports = {
     //Função post()
     async create(request, response){
         const { title, note, priority} = request.body;
-
-        if(!title || !note){
+        console.log('tile:', title)
+        console.log('note:', note)
+        
+        if(!title){
             return response.status(400).json({
-                error:"O doc precisa de title e notas!",
+                error:"O doc precisa de um title!",
+            })
+        }
+
+        if(!note){
+            console.log('entrou no note undefined')
+            return response.status(400).json({
+                error:"O doc precisa de notas!",
             })
         }
 
         const annotationsPost = await Annotations.create({
             title, note, priority
         });
+
         return response.json(annotationsPost);
     },
 
