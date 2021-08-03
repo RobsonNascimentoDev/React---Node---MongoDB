@@ -12,8 +12,6 @@ module.exports = {
     //Função post()
     async create(request, response){
         const { title, note, priority} = request.body;
-        console.log('tile:', title)
-        console.log('note:', note)
         
         if(!title){
             return response.status(400).json({
@@ -31,7 +29,7 @@ module.exports = {
         const annotationsPost = await Annotations.create({
             title, note, priority
         });
-
+        
         return response.json(annotationsPost);
     },
 
@@ -48,8 +46,5 @@ module.exports = {
         return response.status(400).json({
             error:"Registro não encontrado!"
         })
-       
     }
-    
-
 }
