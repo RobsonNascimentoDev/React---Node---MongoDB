@@ -20,10 +20,8 @@ module.exports = {
         if (updatePriority) {
             updatePriority.priority = !updatePriority.priority;
             await updatePriority.save();
-            return response.json({
-                sucess: "Registro Alterado!"
-            })
-        } else {
+            return response.json(updatePriority)
+        } else {s
             return response.status(400).json({
                 error: "Registro não encontrado!"
             })

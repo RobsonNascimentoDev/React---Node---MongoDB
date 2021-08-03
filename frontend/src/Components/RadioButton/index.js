@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import './style.css';
 
-function RadioButtons() {
+function RadioButtons({selectValue, handleChange}) {
 
     const CustonRadio = withStyles({
         root: {
@@ -16,15 +16,27 @@ function RadioButtons() {
         <>
             <div className='radioOptions'>
                 <div>
-                    <CustonRadio />
+                    <CustonRadio
+                        checked={selectValue === 'all'}
+                        onClick={e => handleChange(e.target)}
+                        value="all"
+                    />
                     <span>Todos</span>
                 </div>
                 <div >
-                    <CustonRadio />
+                    <CustonRadio
+                        checked={selectValue === 'true'}
+                        onClick={e => handleChange(e.target)}
+                        value='true'
+                    />
                     <span>Prioridade</span>
                 </div>
                 <div >
-                    <CustonRadio />
+                    <CustonRadio
+                        checked={selectValue === 'false'}
+                        onClick={e => handleChange(e.target)}
+                        value='false'
+                    />
                     <span>Normal</span>
                 </div>
             </div>
